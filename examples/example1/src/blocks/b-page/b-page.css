@@ -1,0 +1,11 @@
+.b-page .b-page__body
+{
+    font: 100% sans-serif;
+
+    visibility: hidden;
+}
+
+.b-page_js_inited .b-page__body
+{
+    visibility: visible;
+}

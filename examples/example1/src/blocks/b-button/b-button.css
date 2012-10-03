@@ -1,0 +1,26 @@
+.b-button
+{
+    background: #3072ff;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    display: inline-block;
+
+    height: 2em;
+
+    line-height: 2em;
+
+    padding: 0 1em;
+}
+
+.b-button_pressed_yes
+{
+    margin: 1px -1px -1px 1px;
+}
+
+.b-button_hover_yes
+{
+    background: red;
+}
