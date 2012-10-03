@@ -1,3 +1,10 @@
+/*!
+ * jQuery BEM — v0.0.1 — 2012-10-04
+ * https://github.com/hoho/jquery-bem
+ *
+ * Copyright (c) 2012 Marat Abdullin
+ * Released under the MIT license
+ */
 (function($) {
 ///////////////////////////////////////////////////////////////////////////////
 
