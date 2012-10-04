@@ -1,4 +1,4 @@
-$.b_.decl('b-button', 'first', 'yes')
+$.BEM.decl('b-button', 'first', 'yes')
     .onMod('js',
         function($super, mod, val, prev) {
             if ($super(mod, val, prev)) {

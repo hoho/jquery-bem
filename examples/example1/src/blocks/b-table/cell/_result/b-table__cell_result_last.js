@@ -1,4 +1,4 @@
-$.b_.decl('b-table')
+$.BEM.decl('b-table')
     .elem('cell', 'result', 'last')
         .onMethod('set',
             function($super, val) {

@@ -1,4 +1,4 @@
-$.b_.decl('b-button')
+$.BEM.decl('b-button')
     .onMod('js',
         function($super, mod, val, prev) {
             $super(mod, val, prev);

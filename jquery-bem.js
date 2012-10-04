@@ -44,7 +44,7 @@ f.ELEM = function(blockName, elemName) {
     );
 
     return function(elem) {
-        return expr && expr.test(getClassName(elem));
+        return expr.test(getClassName(elem));
     };
 };
 
@@ -95,17 +95,17 @@ var declCallback = function(what, name, callback) {
 
     if ($.type(name) === strobject) {
         for (var i in name) {
-            c.push([what + ',' + i + ',' + this._callbackKeyBase, name[i]]);
+            c.push([what + ',' + i + ',' + this._cbKey, name[i]]);
         }
     } else {
-        c.push([what + ',' + name + ',' + this._callbackKeyBase, callback]);
+        c.push([what + ',' + name + ',' + this._cbKey, callback]);
     }
 }
 
 
 Block = function(name, mod, val) {
     this._key = name;
-    this._callbackKeyBase = name + (mod ? modSeparator + mod + (val ? modSeparator + val : '') : '');
+    this._cbKey = name + (mod ? modSeparator + mod + (val ? modSeparator + val : '') : '');
 };
 
 
@@ -129,7 +129,7 @@ Block.prototype.elem = function(name, mod, val) {
 Element = function(block, name, mod, val) {
     this._block = block;
     this._key = block._key + elemSeparator + name;
-    this._callbackKeyBase = block._key + elemSeparator + name + (mod ? modSeparator + mod + (val ? modSeparator + val : '') : '');
+    this._cbKey = block._key + elemSeparator + name + (mod ? modSeparator + mod + (val ? modSeparator + val : '') : '');
 };
 
 
@@ -154,7 +154,7 @@ var Super = function(context, callbacks) {
 };
 
 
-$.b_ = {
+$.BEM = {
     decl: function(name, mod, val) {
         return new Block(name, mod, val);
     }

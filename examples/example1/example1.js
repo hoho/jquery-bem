@@ -2,7 +2,7 @@ $(function() {
     $('.js').bemSetMod('js', 'inited');
 });
 
-$.b_.decl('b-table')
+$.BEM.decl('b-table')
     .elem('cell', 'type', 'result')
         .onMethod('set',
             function($super, val) {
@@ -10,21 +10,21 @@ $.b_.decl('b-table')
                 else { this.html('<em>empty</em>'); }
             });
 
-$.b_.decl('b-table')
+$.BEM.decl('b-table')
     .elem('cell', 'result', 'first')
         .onMethod('set',
             function($super, val) {
                 return $super(val ? 'first: ' + val : '');
             });
 
-$.b_.decl('b-table')
+$.BEM.decl('b-table')
     .elem('cell', 'result', 'last')
         .onMethod('set',
             function($super, val) {
                 return $super(val || Math.random());
             });
 
-$.b_.decl('b-input')
+$.BEM.decl('b-input')
     .onMod('js',
         function($super, mod, val, prev) {
             if (val !== 'inited') { return; }
@@ -34,7 +34,7 @@ $.b_.decl('b-input')
             });
         });
 
-$.b_.decl('b-button')
+$.BEM.decl('b-button')
     .onMod('js',
         function($super, mod, val, prev) {
             $super(mod, val, prev);
@@ -53,7 +53,7 @@ $.b_.decl('b-button')
                 .bemCall('set', row.find('@b-input').focus().select().val());
         });
 
-$.b_.decl('b-button', 'first', 'yes')
+$.BEM.decl('b-button', 'first', 'yes')
     .onMod('js',
         function($super, mod, val, prev) {
             if ($super(mod, val, prev)) {

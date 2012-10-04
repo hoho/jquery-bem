@@ -1,4 +1,4 @@
-$.b_.decl('b-input')
+$.BEM.decl('b-input')
     .onMod('js',
         function($super, mod, val, prev) {
             if (val !== 'inited') { return; }
