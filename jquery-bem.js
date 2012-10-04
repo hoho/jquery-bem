@@ -115,7 +115,7 @@ Block.prototype.onMod = function(name, callback) {
 };
 
 
-Block.prototype.defineMethod = function(name, callback) {
+Block.prototype.onMethod = function(name, callback) {
     declCallback.call(this, 'method', name, callback);
     return this;
 };
@@ -134,7 +134,7 @@ Element = function(block, name, mod, val) {
 
 
 Element.prototype.onMod = Block.prototype.onMod;
-Element.prototype.defineMethod = Block.prototype.defineMethod;
+Element.prototype.onMethod = Block.prototype.onMethod;
 
 
 Element.prototype.end = function() {

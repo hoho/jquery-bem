@@ -9,7 +9,7 @@ $.b_.decl('b-button')
                 .click(function() { $(this).bemCall('onclick'); });
             return true;
         })
-    .defineMethod('onclick',
+    .onMethod('onclick',
         function() {
             var row = this.closest('@b-table(row)');
             row

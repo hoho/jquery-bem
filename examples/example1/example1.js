@@ -4,7 +4,7 @@ $(function() {
 
 $.b_.decl('b-table')
     .elem('cell', 'type', 'result')
-        .defineMethod('set',
+        .onMethod('set',
             function($super, val) {
                 if (val) { this.text(val); }
                 else { this.html('<em>empty</em>'); }
@@ -12,14 +12,14 @@ $.b_.decl('b-table')
 
 $.b_.decl('b-table')
     .elem('cell', 'result', 'first')
-        .defineMethod('set',
+        .onMethod('set',
             function($super, val) {
                 return $super(val ? 'first: ' + val : '');
             });
 
 $.b_.decl('b-table')
     .elem('cell', 'result', 'last')
-        .defineMethod('set',
+        .onMethod('set',
             function($super, val) {
                 return $super(val || Math.random());
             });
@@ -45,7 +45,7 @@ $.b_.decl('b-button')
                 .click(function() { $(this).bemCall('onclick'); });
             return true;
         })
-    .defineMethod('onclick',
+    .onMethod('onclick',
         function() {
             var row = this.closest('@b-table(row)');
             row
