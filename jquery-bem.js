@@ -25,19 +25,24 @@ var m = $.expr.match,
     f = $.expr.filter;
 
 
+// Copied from jQuery.
 var getClassName = function(elem) {
     return elem.className || (typeof elem.getAttribute !== strundefined && elem.getAttribute('class')) || '';
 };
 
 
-m.BLOCK = new RegExp('^@(' + blockPrefixes + characterEncoding + ')');
-m.ELEM = new RegExp('^@(' + blockPrefixes + characterEncoding + ')\\(' +
-                    whitespace + '*(' + characterEncoding + ')' + whitespace +
+// Extending Sizzle with our custom matchers.
+m.BLOCK = new RegExp('^@(' + blockPrefixes + characterEncoding + '|\\*)');
+m.ELEM = new RegExp('^@(' + blockPrefixes + characterEncoding + '|\\*)\\(' +
+                    whitespace + '*(' + characterEncoding + '|\\*)' + whitespace +
                     '*\\)');
 m.MOD = new RegExp('^' + modifiers);
 
 
+// Handlers for our custom selectors (ELEM first, BLOCK second — order matters).
 f.ELEM = function(blockName, elemName) {
+    if (blockName === '*') { blockName = blockPrefixes + characterEncoding; }
+    if (elemName === '*') { elemName = characterEncoding; }
     var expr = new RegExp(
         '(?:^|' + whitespace + '+)' + blockName + elemSeparator + elemName +
         '(?:' + whitespace + '+|$)'
@@ -50,6 +55,7 @@ f.ELEM = function(blockName, elemName) {
 
 
 f.BLOCK = function(name) {
+    if (name === '*') { name = blockPrefixes + characterEncoding; }
     var expr = new RegExp(
         '(?:^|' + whitespace + '+)' + name + '(?:' + whitespace + '+|$)'
     );
@@ -72,6 +78,7 @@ f.MOD = function(name, operator, check) {
         var match = getClassName(elem).match(expr),
             val;
         if (match && (val = match[1])) {
+            // Operators are mostly copied from Sizzle attributes handler.
             return operator === '=' ? val === check :
                    operator === '!=' ? val !== check :
                    operator === '^=' ? check && val.indexOf(check) === 0 :
@@ -86,7 +93,9 @@ f.MOD = function(name, operator, check) {
 };
 
 
-var Block, Element, _decl = {};
+var Block,
+    Element,
+    _decl = {}; // _decl is a dictionary to store declared callbacks.
 
 
 var declCallback = function(what, name, callback) {
