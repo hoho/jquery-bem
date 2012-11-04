@@ -46,6 +46,6 @@ test('Modifier selectors test', function() {
     equalNodes('@*(elem2){boo = moo}', ['4-4', '4-5']);
     equalNodes('{ooo}', ['4-5']);
     equalNodes('{ooo = zoo}', ['4-5']);
-    equalNodes('@b-block1{love}{life}', ['3']);
+    equalNodes('@b-block1{love}[id=3]{life}', ['3']);
     equalNodes('@b-block1{love=cruel}{life!=easy}', ['3']);
 });
