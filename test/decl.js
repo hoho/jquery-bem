@@ -35,7 +35,7 @@ function equalRet(func, desired, ret) {
 test('Modifier change test', function() {
     equalRet(
         function() {
-            $('@b-block1').eq(0)
+            $('%b-block1').eq(0)
                 .bemSetMod('love', 'not-so-cruel')
                 .bemSetMod('love', '');
         },
@@ -45,7 +45,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('@b-block5')
+            $('%b-block5')
                 .bemSetMod('love', 'not-so-cruel')
                 .bemSetMod('love', '');
         },
@@ -54,7 +54,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('@b-block1')
+            $('%b-block1')
                 .bemSetMod('love', 'cruel')
                 .bemSetMod('love', 'not-cruel')
                 .bemSetMod('love', 'cruel');
@@ -72,13 +72,13 @@ test('Modifier change test', function() {
     );
 
     equalRet(
-        function() { $('@b-block1(elem1)').bemSetMod('aaa', 'bbb').bemSetMod('aaa', ''); },
+        function() { $('%b-block1(elem1)').bemSetMod('aaa', 'bbb').bemSetMod('aaa', ''); },
         []
     );
 
     equalRet(
         function() {
-            $('@b-block1(elem1)')
+            $('%b-block1(elem1)')
                 .bemSetMod('blah', 'auch')
                 .bemSetMod('blah', 'zoo')
                 .bemSetMod('blah', '');
@@ -135,59 +135,59 @@ test('Modifier change test', function() {
 
 test('Method call test', function() {
     equalRet(
-        function() { return $('@b-block1').bemCall('m1', 11, 22); },
+        function() { return $('%b-block1').bemCall('m1', 11, 22); },
         ['m1 1 11 22'],
         '345'
     );
 
     equalRet(
-        function() { return $('@b-block1[id=3]').bemCall('m1', 11, 22); },
+        function() { return $('%b-block1[id=3]').bemCall('m1', 11, 22); },
         ['m1 3 22 11', 'm1-2 3 11 22'],
         'zzz345'
     );
 
     equalRet(
-        function() { return $('@b-block1').bemCall('m2', 11, 22); },
+        function() { return $('%b-block1').bemCall('m2', 11, 22); },
         ['m2 1 22 11', 'm2-2 1 11 22'],
         '567456'
     );
 
     equalRet(
-        function() { return $('@b-block100500').bemCall('m2', 11, 22); },
+        function() { return $('%b-block100500').bemCall('m2', 11, 22); },
         []
     );
 
     equalRet(
-        function() { return $('@b-block1(elem1)').bemCall('em1', 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall('em1', 11, 22); },
         ['em1 6-1 22 11', 'em1-1 6-1 11 22'],
         '123-2 123'
     );
 
     equalRet(
-        function() { return $('@b-block1(elem1)').bemCall('em2', 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall('em2', 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('@b-block2(elem1)').bemCall('em1', 11, 22); },
+        function() { return $('%b-block2(elem1)').bemCall('em1', 11, 22); },
         []
     );
 
     equalRet(
-        function() { return $('@b-block1(elem1)').bemCall({method: 'em2'}, 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall({method: 'em2'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('@b-block1(elem1)').bemCall({method: 'em2', block: 'b-block1', elem: 'elem1'}, 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall({method: 'em2', block: 'b-block1', elem: 'elem1'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('@b-block1').eq(2).bemCall({method: 'm2', block: 'b-block1'}, 11, 22); },
+        function() { return $('%b-block1').eq(2).bemCall({method: 'm2', block: 'b-block1'}, 11, 22); },
         ['m2 3 22 11', 'm2-2 3 11 22'],
         '567456'
     );

@@ -32,8 +32,8 @@ var getClassName = function(elem) {
 
 
 // Extending Sizzle with our custom matchers.
-m.BLOCK = new RegExp('^@(' + blockPrefixes + characterEncoding + '|\\*)');
-m.ELEM = new RegExp('^@(' + blockPrefixes + characterEncoding + '|\\*)\\(' +
+m.BLOCK = new RegExp('^%(' + blockPrefixes + characterEncoding + '|\\*)');
+m.ELEM = new RegExp('^%(' + blockPrefixes + characterEncoding + '|\\*)\\(' +
                     whitespace + '*(' + characterEncoding + '|\\*)' + whitespace +
                     '*\\)');
 m.MOD = new RegExp('^' + modifiers);
