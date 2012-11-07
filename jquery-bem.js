@@ -298,9 +298,9 @@ var bemSetGetMod = function(what, where, mod, val) {
                         prev = w[j][1];
                     }
                 }
+                if ((!prev && !val) || (prev === val)) { return; }
                 callbacks = getCallbacks('mod', mod, i, w);
                 j = i + modSeparator + mod;
-                if ((!prev && !val) || (prev === val)) { return; }
                 // Don't forget about boolean modifiers.
                 if (prev) { self.removeClass(j + (prev === true ? '' : modSeparator + prev)); }
                 if (val) { self.addClass(j + (val === true ? '' : modSeparator + val)); }
