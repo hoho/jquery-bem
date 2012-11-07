@@ -70,14 +70,15 @@ f.MOD = function(name, operator, check) {
     var expr = new RegExp(
         '(?:^|' + whitespace + '+)' + blockPrefixes + characterEncoding +
         '(?:' + elemSeparator + characterEncoding +')?' +
-        modSeparator + name + modSeparator + '(' + characterEncoding +
-        ')(?:' + whitespace + '+|$)'
+        modSeparator + name + '(?:' + modSeparator + '(' + characterEncoding +
+        '))?(?:' + whitespace + '+|$)'
     );
 
     return function(elem) {
         var match = getClassName(elem).match(expr),
             val;
-        if (match && (val = match[1])) {
+        if (match) {
+            val = match[1] || '';
             // Operators are mostly copied from Sizzle attributes handler.
             return operator === '=' ? val === check :
                    operator === '!=' ? val !== check :
@@ -170,20 +171,20 @@ $.BEM = {
 };
 
 
-var getBlockElemModRegExp = function(blockName, elemName) {
+var getBlockElemModRegExp = function(blockName, elemName, modName) {
     return new RegExp(
         '(?:^|' + whitespace + ')(' + (blockName || (blockPrefixes + characterEncoding)) +
         ')(?:' + elemSeparator + '(' + (elemName || characterEncoding) + '))?(?:' +
-        modSeparator + '(' + characterEncoding + ')' +
-        modSeparator + '(' + characterEncoding + '))?(?:' + whitespace + '|$)',
+        modSeparator + '(' + (modName || characterEncoding) + ')(?:' +
+        modSeparator + '(' + characterEncoding + '))?)?(?:' + whitespace + '|$)',
         'g'
     );
 };
 
 
-var getBlockElemModByClassName = function(className, blockName, elemName, firstOnly) {
+var getBlockElemModByClassName = function(className, blockName, elemName, modName, firstOnly) {
     var ret = {};
-    (className || '').replace(globalWhitespace, '  ').replace(getBlockElemModRegExp(blockName, elemName),
+    (className || '').replace(globalWhitespace, '  ').replace(getBlockElemModRegExp(blockName, elemName, modName),
         function(_, b, e, m, v) {
             if (!blockName && !elemName && firstOnly) {
                 blockName = b;
@@ -192,7 +193,8 @@ var getBlockElemModByClassName = function(className, blockName, elemName, firstO
 
             _ = b + (e ? elemSeparator + e: '');
             if (!ret[_]) { ret[_] = []; }
-            if (m && v) { ret[_].push([m, v]); }
+            // v is a modifier value or undefined for boolean modifiers.
+            if (m) { ret[_].push([m, v ? v : true]); }
         }
     );
 
@@ -251,7 +253,7 @@ $.fn.bemCall = function(method) {
     _args = Array.prototype.slice.call(arguments, 1);
 
     var self = this.eq(0),
-        whatToCall = getBlockElemModByClassName(self.attr('class'), blockName, elemName, true),
+        whatToCall = getBlockElemModByClassName(self.attr('class'), blockName, elemName, undefined, true),
         callbacks, i;
     for (i in whatToCall) {
         callbacks = getCallbacks('method', method, i, whatToCall[i]);
@@ -260,43 +262,81 @@ $.fn.bemCall = function(method) {
 };
 
 
-$.fn.bemSetMod = function(where, mod, val) {
-    var blockName, elemName;
+var bemSetGetMod = function(what, where, mod, val) {
+    var blockName, elemName, w, i;
 
     if ($.type(where) === strobject) {
         blockName = where.block;
         if (blockName) { elemName = where.elem; }
     } else if ($.type(val) === strundefined) {
-        val = mod;
-        mod = where;
+        if (what || !mod) {
+            val = mod;
+            mod = where;
+        }
     } else {
         blockName = where;
     }
 
-    if (!mod) { return this; }
+    if (!mod) {
+        $.error('No modifier');
+        return;
+    }
 
-    this.each(function() {
-        var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
-            callbacks, i, j, w, prev, self = $(this);
+    if (what) {
+        // Setting modifier.
+        if ($.type(val) === 'boolean') { val = val ? true : ''; }
 
-        for (i in whatToCall) {
-            w  = whatToCall[i];
-            prev = '';
-            for (j = 0; j < w.length; j++) {
-                if (w[j][0] == mod) {
-                    prev = w[j][1];
+        this.each(function() {
+            var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
+                callbacks, j, prev, self = $(this);
+
+            for (i in whatToCall) {
+                w  = whatToCall[i];
+                prev = undefined;
+                for (j = 0; j < w.length; j++) {
+                    if (w[j][0] == mod) {
+                        prev = w[j][1];
+                    }
                 }
+                callbacks = getCallbacks('mod', mod, i, w);
+                j = i + modSeparator + mod;
+                if ((!prev && !val) || (prev === val)) { return; }
+                // Don't forget about boolean modifiers.
+                if (prev) { self.removeClass(j + (prev === true ? '' : modSeparator + prev)); }
+                if (val) { self.addClass(j + (val === true ? '' : modSeparator + val)); }
+                Super(self, callbacks)(mod, val ? val : undefined, prev);
             }
-            callbacks = getCallbacks('mod', mod, i, w);
-            j = i + modSeparator + mod + modSeparator;
-            if ((!prev && !val) || (prev == val)) { return; }
-            if (prev) { self.removeClass(j + prev); }
-            if (val) { self.addClass(j + val); }
-            Super(self, callbacks)(mod, val, prev);
-        }
-    });
+        });
 
-    return this;
+        return this;
+    } else {
+        // Getting modifier.
+        w = getBlockElemModByClassName(this.eq(0).attr('class'), blockName, elemName, mod, true);
+        for (i in w) {
+            w = w[i][0];
+            return w ? w[1] || true : null;
+        }
+        return null;
+    }
+
+};
+
+
+$.fn.bemSetMod = function(where, mod, val) {
+    return bemSetGetMod.call(this, true, where, mod, val);
+};
+
+
+$.fn.bemGetMod = function(where, mod) {
+    return bemSetGetMod.call(this, false, where, mod);
+};
+
+
+$.fn.bemDelMod = function(where, mod) {
+    var val;
+    if ($.type(mod) === strundefined) { mod = ''; }
+    else { val = ''; }
+    return this.bemSetMod(where, mod, val);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

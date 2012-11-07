@@ -39,8 +39,8 @@ test('Modifier change test', function() {
                 .bemSetMod('love', 'not-so-cruel')
                 .bemSetMod('love', '');
         },
-        ['love 1 love not-so-cruel ', 'love-2 1 love not-so-cruel ',
-         'love 1 love  not-so-cruel', 'love-2 1 love  not-so-cruel']
+        ['love 1 love not-so-cruel undefined', 'love-2 1 love not-so-cruel undefined',
+         'love 1 love undefined not-so-cruel', 'love-2 1 love undefined not-so-cruel']
     );
 
     equalRet(
@@ -59,8 +59,8 @@ test('Modifier change test', function() {
                 .bemSetMod('love', 'not-cruel')
                 .bemSetMod('love', 'cruel');
         },
-        ['love 1 love cruel ', 'love-2 1 love cruel ',
-         'love 6 love cruel ', 'love-2 6 love cruel ',
+        ['love 1 love cruel undefined', 'love-2 1 love cruel undefined',
+         'love 6 love cruel undefined', 'love-2 6 love cruel undefined',
          'love 1 love not-cruel cruel', 'love-2 1 love not-cruel cruel',
          'love 2 love not-cruel cruel', 'love-2 2 love not-cruel cruel',
          'love 3 love not-cruel cruel', 'love-2 3 love not-cruel cruel',
@@ -83,12 +83,12 @@ test('Modifier change test', function() {
                 .bemSetMod('blah', 'zoo')
                 .bemSetMod('blah', '');
         },
-        ['blah 6-1 blah auch ',
+        ['blah 6-1 blah auch undefined',
          'blah 6-1 blah zoo auch',
          'blah-auch 6-1 blah zoo auch',
          'blah-2 6-1 blah zoo auch',
-         'blah 6-1 blah  zoo',
-         'blah-2 6-1 blah  zoo']
+         'blah 6-1 blah undefined zoo',
+         'blah-2 6-1 blah undefined zoo']
     );
 
     equalRet(function() { $('div').bemSetMod('gege', '1231').bemSetMod('gege', ''); }, []);
@@ -97,19 +97,19 @@ test('Modifier change test', function() {
         function() {
             $('div').bemSetMod('100500', 'yes').bemSetMod('100500', '');
         },
-        ['100500 1 100500 yes ',
-         '100500 2 100500 yes ',
-         '100500 3 100500 yes ',
-         '100500 6 100500 yes ',
-         '100500 1 100500  yes',
-         '100500 2 100500  yes',
-         '100500 3 100500  yes',
-         '100500 6 100500  yes']
+        ['100500 1 100500 yes undefined',
+         '100500 2 100500 yes undefined',
+         '100500 3 100500 yes undefined',
+         '100500 6 100500 yes undefined',
+         '100500 1 100500 undefined yes',
+         '100500 2 100500 undefined yes',
+         '100500 3 100500 undefined yes',
+         '100500 6 100500 undefined yes']
     );
 
     equalRet(
         function() { $('div').bemSetMod('zzz', 'ololo').bemSetMod('zzz', ''); },
-        ['zzz 3 zzz ololo ', 'zzz 3 zzz  ololo']
+        ['zzz 3 zzz ololo undefined', 'zzz 3 zzz undefined ololo']
     );
 
     equalRet(
@@ -119,17 +119,32 @@ test('Modifier change test', function() {
 
     equalRet(
         function() { $('div').bemSetMod('b-block1', 'zzz', 'ololo').bemSetMod('zzz', ''); },
-        ['zzz 3 zzz ololo ', 'zzz 3 zzz  ololo']
+        ['zzz 3 zzz ololo undefined', 'zzz 3 zzz undefined ololo']
     );
 
     equalRet(
         function() { $('div').bemSetMod({block: 'b-block1'}, 'zzz', 'ololo').bemSetMod('zzz', ''); },
-        ['zzz 3 zzz ololo ', 'zzz 3 zzz  ololo']
+        ['zzz 3 zzz ololo undefined', 'zzz 3 zzz undefined ololo']
     );
 
     equalRet(
-        function() { $('div, span').bemSetMod({block: 'b-block1', elem: 'elem1'}, 'blah', 'ololo').bemSetMod({block: 'b-block1', elem: 'elem1'}, 'blah', ''); },
-        ['blah 6-1 blah ololo ', 'blah 6-1 blah  ololo', 'blah-2 6-1 blah  ololo']
+        function() {
+            $('div, span')
+                .bemSetMod({block: 'b-block1', elem: 'elem1'}, 'blah', 'ololo')
+                .bemSetMod({block: 'b-block1', elem: 'elem1'}, 'blah', '');
+        },
+        ['blah 6-1 blah ololo undefined', 'blah 6-1 blah undefined ololo',
+         'blah-2 6-1 blah undefined ololo']
+    );
+
+    equalRet(
+        function() { $('div').bemSetMod('zzz', true).bemDelMod('zzz'); },
+        ['zzz 3 zzz true undefined', 'zzz 3 zzz undefined true']
+    );
+
+    equalRet(
+        function() { $('div').bemSetMod('zzz', true).bemSetMod('zzz', true).bemDelMod('zzz'); },
+        ['zzz 3 zzz true undefined', 'zzz 3 zzz undefined true']
     );
 });
 

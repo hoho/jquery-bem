@@ -48,4 +48,7 @@ test('Modifier selectors test', function() {
     equalNodes('{ooo = zoo}', ['4-5']);
     equalNodes('%b-block1{love}[id=3]{life}', ['3']);
     equalNodes('%b-block1{love=cruel}{life!=easy}', ['3']);
+    equalNodes('{bool}', ['3', '9']);
+    equalNodes('{bool!=something}', ['3', '9']);
+    equalNodes('{bool=something}', []);
 });
