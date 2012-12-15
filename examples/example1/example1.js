@@ -28,7 +28,7 @@ $.BEM.decl('b-input')
     .onMod('js',
         function($super, mod, val, prev) {
             if (val !== 'inited') { return; }
-            var button = this.closest('@b-table(row)').find('@b-button');
+            var button = this.closest('%b-table(row)').find('%b-button');
             this.keypress(function(e) {
                 if (e.charCode === 13) { button.click(); }
             });
@@ -47,10 +47,10 @@ $.BEM.decl('b-button')
         })
     .onMethod('onclick',
         function() {
-            var row = this.closest('@b-table(row)');
+            var row = this.closest('%b-table(row)');
             row
-                .find('@b-table(cell){type=result}')
-                .bemCall('set', row.find('@b-input').focus().select().val());
+                .find('%b-table(cell){type=result}')
+                .bemCall('set', row.find('%b-input').focus().select().val());
         });
 
 $.BEM.decl('b-button', 'first', 'yes')
@@ -61,7 +61,7 @@ $.BEM.decl('b-button', 'first', 'yes')
                     .mouseover(function() { $(this).bemSetMod('hover', 'yes'); })
                     .mouseout(function() { $(this).bemSetMod('hover', ''); });
 
-                this.closest('@b-table(row)').find('@b-input').focus();
+                this.closest('%b-table(row)').find('%b-input').focus();
             }
         });
 

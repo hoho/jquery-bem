@@ -11,8 +11,8 @@ $.BEM.decl('b-button')
         })
     .onMethod('onclick',
         function() {
-            var row = this.closest('@b-table(row)');
+            var row = this.closest('%b-table(row)');
             row
-                .find('@b-table(cell){type=result}')
-                .bemCall('set', row.find('@b-input').focus().select().val());
+                .find('%b-table(cell){type=result}')
+                .bemCall('set', row.find('%b-input').focus().select().val());
         });

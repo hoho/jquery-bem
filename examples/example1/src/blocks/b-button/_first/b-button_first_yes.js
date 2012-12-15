@@ -6,6 +6,6 @@ $.BEM.decl('b-button', 'first', 'yes')
                     .mouseover(function() { $(this).bemSetMod('hover', 'yes'); })
                     .mouseout(function() { $(this).bemSetMod('hover', ''); });
 
-                this.closest('@b-table(row)').find('@b-input').focus();
+                this.closest('%b-table(row)').find('%b-input').focus();
             }
         });
