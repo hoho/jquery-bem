@@ -8,7 +8,7 @@
 (function($) {
 ///////////////////////////////////////////////////////////////////////////////
 
-var blockPrefixes = '(?:b\\-|l\\-)',
+var blockPrefixes = '(?:b\\-|l\\-)?',
     elemSeparator = '__',
     modSeparator = '_',
     whitespace = '[\\x20\\t\\r\\n\\f]',
