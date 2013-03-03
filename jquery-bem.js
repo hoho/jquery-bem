@@ -27,7 +27,7 @@ var m = $.expr.match,
 
 // Copied from jQuery.
 var getClassName = function(elem) {
-    return elem.className || (typeof elem.getAttribute !== strundefined && elem.getAttribute('class')) || '';
+    return typeof elem.className == 'object'? elem.className.baseVal : elem.className || (typeof elem.getAttribute !== strundefined && elem.getAttribute('class')) || '';
 };
 
 
