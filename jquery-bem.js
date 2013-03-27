@@ -110,7 +110,7 @@ var declCallback = function(what, name, callback) {
     } else {
         c.push([what + ',' + name + ',' + this._cbKey, callback]);
     }
-}
+};
 
 
 Block = function(name, mod, val) {
