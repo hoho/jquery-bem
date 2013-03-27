@@ -110,7 +110,7 @@ var declCallback = function(what, name, callback) {
     } else {
         c.push([what + ',' + name + ',' + this._cbKey, callback]);
     }
-}
+};
 
 
 Block = function(name, mod, val) {
@@ -263,7 +263,7 @@ $.fn.bemCall = function(method) {
 
 
 var bemSetGetMod = function(what, where, mod, val) {
-    var blockName, elemName, w, i;
+    var blockName, elemName;
 
     if ($.type(where) === strobject) {
         blockName = where.block;
@@ -288,10 +288,10 @@ var bemSetGetMod = function(what, where, mod, val) {
 
         this.each(function() {
             var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
-                callbacks, j, prev, self = $(this);
+                callbacks, j, w, prev, self = $(this);
 
-            for (i in whatToCall) {
-                w  = whatToCall[i];
+            for (var i in whatToCall) {
+                w = whatToCall[i];
                 prev = undefined;
                 for (j = 0; j < w.length; j++) {
                     if (w[j][0] == mod) {
@@ -311,8 +311,8 @@ var bemSetGetMod = function(what, where, mod, val) {
         return this;
     } else {
         // Getting modifier.
-        w = getBlockElemModByClassName(this.eq(0).attr('class'), blockName, elemName, mod, true);
-        for (i in w) {
+        var w = getBlockElemModByClassName(this.eq(0).attr('class'), blockName, elemName, mod, true);
+        for (var i in w) {
             w = w[i][0];
             return w ? w[1] || true : null;
         }
