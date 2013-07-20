@@ -5,9 +5,9 @@ $.BEM.decl('b-block1')
     .onMod('100500', function($super, mod, val, prev) { __declRet.push('100500 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .elem('elem1')
         .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
-        .onMethod('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123' + ret; })
-        .onMethod('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1-1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123-2 ' + ret; })
-        .onMethod('em2', function($super, p1, p2) { __declRet.push('em2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '234'; })
+        .onCall('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123' + ret; })
+        .onCall('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1-1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123-2 ' + ret; })
+        .onCall('em2', function($super, p1, p2) { __declRet.push('em2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '234'; })
         .end()
     .elem('elem1', 'blah', 'auch')
         .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah-auch ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
@@ -15,16 +15,16 @@ $.BEM.decl('b-block1')
     .elem('elem1', 'blah')
         .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
         .end()
-    .onMethod('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '345' + ret; })
-    .onMethod('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '456' + ret; })
-    .onMethod('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '567' + ret; });
+    .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '345' + ret; })
+    .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '456' + ret; })
+    .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '567' + ret; });
 
 $.BEM.decl('b-block1')
     .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); });
 
 $.BEM.decl('b-block1', 'life')
     .onMod('zzz', function($super, mod, val, prev) { __declRet.push('zzz ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
-    .onMethod('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; })
+    .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; })
 
 function equalRet(func, desired, ret) {
     __declRet = [];
@@ -138,17 +138,17 @@ test('Modifier change test', function() {
     );
 
     equalRet(
-        function() { $('div').bemSetMod('zzz', true).bemDelMod('zzz'); },
+        function() { $('div').bemSetMod('zzz', true).bemSetMod('zzz', null); },
         ['zzz 3 zzz true undefined', 'zzz 3 zzz undefined true']
     );
 
     equalRet(
-        function() { $('div').bemSetMod('zzz', true).bemSetMod('zzz', true).bemDelMod('zzz'); },
+        function() { $('div').bemSetMod('zzz', true).bemSetMod('zzz', true).bemSetMod('zzz', null); },
         ['zzz 3 zzz true undefined', 'zzz 3 zzz undefined true']
     );
 });
 
-test('Method call test', function() {
+test('Call test', function() {
     equalRet(
         function() { return $('%b-block1').bemCall('m1', 11, 22); },
         ['m1 1 11 22'],
@@ -190,19 +190,19 @@ test('Method call test', function() {
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall({method: 'em2'}, 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall({call: 'em2'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall({method: 'em2', block: 'b-block1', elem: 'elem1'}, 11, 22); },
+        function() { return $('%b-block1(elem1)').bemCall({call: 'em2', block: 'b-block1', elem: 'elem1'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('%b-block1').eq(2).bemCall({method: 'm2', block: 'b-block1'}, 11, 22); },
+        function() { return $('%b-block1').eq(2).bemCall({call: 'm2', block: 'b-block1'}, 11, 22); },
         ['m2 3 22 11', 'm2-2 3 11 22'],
         '567456'
     );

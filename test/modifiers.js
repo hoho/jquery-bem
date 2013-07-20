@@ -56,7 +56,7 @@ test('Modifier class changes', function() {
     testClasses('testbool',  ['1 b-block1_testbool', '2 b-block1_testbool_aaa',
                               '3 b-block1_testbool']);
 
-    $('%b-block1').bemDelMod({block: 'b-block1'}, 'testbool');
+    $('%b-block1').bemSetMod({block: 'b-block1'}, 'testbool', null);
     testClasses('testbool', []);
 });
 
