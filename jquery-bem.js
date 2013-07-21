@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.1.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.1.2, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -281,6 +281,7 @@ f.MOD = function(name, operator, check) {
 
         if (match) {
             val = match[1] || emptyString;
+
             // Operators are mostly copied from Sizzle attributes handler.
             return operator === '=' ? val === check :
                    operator === '!=' ? val !== check :
@@ -288,7 +289,7 @@ f.MOD = function(name, operator, check) {
                    operator === '*=' ? check && val.indexOf(check) > -1 :
                    operator === '$=' ? check && val.substr(val.length - check.length) === check :
                    operator === '|=' ? val === check || val.substr(0, check.length + 1) === check + '-' :
-                   typeof check === strundefined;
+                   !check;
         }
 
         return false;
