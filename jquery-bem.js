@@ -275,8 +275,6 @@ f.MOD = function(name, operator, check) {
         '))?(?:' + whitespace + '+|$)'
     );
 
-    console.log(expr);
-
     return function(elem) {
         var match = getClassName(elem).match(expr),
             val;
