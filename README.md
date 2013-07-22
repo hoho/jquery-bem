@@ -3,4 +3,4 @@ jquery-bem
 
 Lightweight BEM plugin for jQuery.
 
-Documentation is in progress.
+So called «documentation»: http://xslc.org/jquery-bem/.
