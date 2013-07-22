@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.2.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.2.2, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -15,8 +15,6 @@ var blockPrefixes = '(?:b\\-|l\\-)',
     modifiers = '\\{' + whitespace + '*(' + characterEncoding + ')' +
                 whitespace + '*(?:' + operators + whitespace +
                 '*(' + characterEncoding + '))?' + whitespace + '*\\}',
-    strundefined = 'undefined',
-    strobject = 'object',
     modKey = 'm',
     callKey = 'c',
     buildKey = 'b',
@@ -36,7 +34,7 @@ var blockPrefixes = '(?:b\\-|l\\-)',
     _decl = {}, // _decl is a dictionary to store declared callbacks.
 
     isObject = function(obj) {
-        return typeof obj === strobject;
+        return typeof obj === 'object';
     },
 
     Block = function(name, mod, val) {
@@ -46,8 +44,8 @@ var blockPrefixes = '(?:b\\-|l\\-)',
 
     Element = function(block, name, mod, val) {
         this._b = block;
-        this._k = block._k + elemSeparator + name;
-        this._c = block._k + elemSeparator + name + (mod ? modSeparator + mod + (val ? modSeparator + val : emptyString) : emptyString);
+        this._c = (this._k = block._k + elemSeparator + name) +
+                  (mod ? modSeparator + mod + (val ? modSeparator + val : emptyString) : emptyString);
     },
 
     getClassName = function(elem/**/, className) {
@@ -55,7 +53,7 @@ var blockPrefixes = '(?:b\\-|l\\-)',
             (isObject(className) ?
                 className.baseVal
                 :
-                className || (typeof elem.getAttribute !== strundefined && elem.getAttribute('class')) || emptyString)
+                className || (elem.getAttribute !== undefined && elem.getAttribute('class')) || emptyString)
             :
             emptyString;
     },
@@ -70,18 +68,22 @@ var blockPrefixes = '(?:b\\-|l\\-)',
         );
     },
 
-    declCallback = function(what, name, callback/**/, c, i) {
-        if (!(c = _decl[this._k])) {
-            _decl[this._k] = c = [];
+    declCallback = function(what, name, callback/**/, c, i, self) {
+        self = this;
+
+        if (!(c = _decl[self._k])) {
+            _decl[self._k] = c = [];
         }
 
         if (isObject(name)) {
             for (i in name) {
-                c.push([what + commaString + i + commaString + this._c, name[i]]);
+                c.push([what + commaString + i + commaString + self._c, name[i]]);
             }
         } else {
-            c.push([what + commaString + name + commaString + this._c, callback]);
+            c.push([what + commaString + name + commaString + self._c, callback]);
         }
+
+        return self;
     },
 
     Super = function(context, callbacks/**/, position) {
@@ -135,7 +137,7 @@ var blockPrefixes = '(?:b\\-|l\\-)',
 
         matcher[k = part + commaString + name + commaString + key] = true;
 
-        k = k + modSeparator;
+        k += modSeparator;
 
         for (i = 0; i < mods.length; i++) {
             matcher[j = k + mods[i].mod] = true;
@@ -227,18 +229,15 @@ f.MOD = function(name, operator, check) {
 
 Block[prototype] = blockProto = {
     onBuild: function(callback) {
-        declCallback.call(this, buildKey, buildKey, callback);
-        return this;
+        return declCallback.call(this, buildKey, buildKey, callback);
     },
 
     onMod: function(name, callback) {
-        declCallback.call(this, modKey, name, callback);
-        return this;
+        return declCallback.call(this, modKey, name, callback);
     },
 
     onCall: function(name, callback) {
-        declCallback.call(this, callKey, name, callback);
-        return this;
+        return declCallback.call(this, callKey, name, callback);
     },
 
     elem: function(name, mod, val) {
@@ -281,7 +280,12 @@ $.BEM = {
 
 
 $fn.bemCall = function(name) {
-    var blockName, elemName, _args, self, whatToCall, i;
+    var blockName,
+        elemName,
+        args = sliceFunc.call(arguments, 1),
+        self = this.eq(0),
+        whatToCall,
+        i;
 
     if (isObject(name)) {
         if (blockName = name.block) {
@@ -291,23 +295,17 @@ $fn.bemCall = function(name) {
         name = name.call;
     }
 
-    if (!name) {
-        return;
-    } else {
+    if (name) {
         name += emptyString;
-    }
 
-    _args = sliceFunc.call(arguments, 1);
+        whatToCall = getBlockElemModByClassName(getClassName(self[0]), blockName, elemName, undefined, true);
 
-    self = this.eq(0);
-
-    whatToCall = getBlockElemModByClassName(getClassName(self[0]), blockName, elemName, undefined, true);
-
-    for (i in whatToCall) {
-        return Super(
-            self,
-            getCallbacks(callKey, name, i, whatToCall[i])
-        ).apply(this, _args);
+        for (i in whatToCall) {
+            return Super(
+                self,
+                getCallbacks(callKey, name, i, whatToCall[i])
+            ).apply(this, args);
+        }
     }
 };
 
@@ -316,7 +314,8 @@ $fn.bemMod = function(mod, val) {
     var blockName,
         elemName,
         tmp,
-        i;
+        i,
+        self = this;
 
     if (isObject(mod)) {
         if (blockName = mod.block) {
@@ -333,7 +332,7 @@ $fn.bemMod = function(mod, val) {
 
     if (val === undefined) {
         // Getting modifier.
-        tmp = getBlockElemModByClassName(getClassName(this[0]), blockName, elemName, mod, true);
+        tmp = getBlockElemModByClassName(getClassName(self[0]), blockName, elemName, mod, true);
 
         for (i in tmp) {
             tmp = tmp[i][0];
@@ -347,7 +346,7 @@ $fn.bemMod = function(mod, val) {
             val = val ? true : emptyString;
         }
 
-        this.each(function() {
+        self.each(function() {
             var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
                 callbacks,
                 j,
@@ -386,7 +385,7 @@ $fn.bemMod = function(mod, val) {
             }
         });
 
-        return this;
+        return self;
     }
 };
 
