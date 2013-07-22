@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.2.0, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.2.1, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -261,17 +261,19 @@ $.BEM = {
         return new Block(name, mod, val);
     },
 
-    build: function(parent, name) {
-        var args = sliceFunc.call(arguments, 2),
-            mods;
+    build: function(name) {
+        var args = sliceFunc.call(arguments, 1),
+            mods,
+            context;
 
         if (isObject(name)) {
             mods = name.mods;
+            context = name.context;
             name = name.block;
         }
 
         return Super(
-            parent,
+            context,
             getCallbacks(buildKey, buildKey, name, mods || [])
         ).apply(this, args);
     }

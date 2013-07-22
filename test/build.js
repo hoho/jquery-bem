@@ -1,6 +1,6 @@
 var callstack,
     callback = function($super, arg1, arg2, name) {
-        callstack.push([this.tagName.toLowerCase(), ++arg1, arg2, name]);
+        callstack.push([(this.tagName || 'undefined').toLowerCase(), ++arg1, arg2, name]);
 
         return $super(arg1, arg2);
     },
@@ -26,15 +26,15 @@ $.BEM.decl('b-block1', 'mod2', 'val')
 
 test('Build test', function() {
     callstack = [];
-    $.BEM.build(document.body, 'b-block1', 111, '222');
+    $.BEM.build('b-block1', 111, '222');
     deepEqual(callstack, [
-        ['body', 112, '222', 3],
-        ['body', 113, '222', 2],
-        ['body', 114, '222', 1]
+        ['undefined', 112, '222', 3],
+        ['undefined', 113, '222', 2],
+        ['undefined', 114, '222', 1]
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod'}]}, 111, '222');
+    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 4],
         ['body', 113, '222', 3],
@@ -43,7 +43,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}]}, 111, '222');
+    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 3],
@@ -52,7 +52,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}, {mod: 'mod'}]}, 111, '222');
+    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}, {mod: 'mod'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 4],
