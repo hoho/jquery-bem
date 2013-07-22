@@ -34,7 +34,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{name: 'mod'}]}, 111, '222');
+    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod'}]}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 4],
         ['body', 113, '222', 3],
@@ -43,7 +43,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{name: 'mod2', val: 'val'}]}, 111, '222');
+    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}]}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 3],
@@ -52,7 +52,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build(document.body, {block: 'b-block1', mods: [{name: 'mod2', val: 'val'}, {name: 'mod'}]}, 111, '222');
+    $.BEM.build(document.body, {block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}, {mod: 'mod'}]}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 4],

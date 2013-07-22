@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.1.2, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.2.0, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -111,7 +111,7 @@ var blockPrefixes = '(?:b\\-|l\\-)',
                 _ = b + (e ? elemSeparator + e : emptyString);
                 if (!ret[_]) { ret[_] = []; }
                 // v is a modifier value or undefined for boolean modifiers.
-                if (m) { ret[_].push({name: m, val: v || true}); }
+                if (m) { ret[_].push({mod: m, val: v || true}); }
             }
         );
 
@@ -138,7 +138,7 @@ var blockPrefixes = '(?:b\\-|l\\-)',
         k = k + modSeparator;
 
         for (i = 0; i < mods.length; i++) {
-            matcher[j = k + mods[i].name] = true;
+            matcher[j = k + mods[i].mod] = true;
 
             matcher[j + modSeparator + mods[i].val] = true;
         }
@@ -156,78 +156,6 @@ var blockPrefixes = '(?:b\\-|l\\-)',
         }
 
         return ret;
-    },
-
-    bemSetGetMod = function(what, where, mod, val/**/, blockName, elemName, tmp, i) {
-        if (isObject(where)) {
-            if (blockName = where.block) {
-                elemName = where.elem;
-            }
-        } else if (typeof val === strundefined) {
-            if (what || !mod) {
-                val = mod;
-                mod = where;
-            }
-        } else {
-            blockName = where;
-        }
-
-        if (!mod) {
-            $.error('No modifier');
-            return;
-        }
-
-        if (what) {
-            // Setting modifier.
-            if (typeof val === 'boolean') { val = val ? true : emptyString; }
-
-            this.each(function() {
-                var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
-                    callbacks, j, w, prev, self = $(this);
-
-                for (i in whatToCall) {
-                    w = whatToCall[i];
-                    prev = undefined;
-
-                    for (j = 0; j < w.length; j++) {
-                        if (w[j].name === mod) {
-                            prev = w[j].val;
-                        }
-                    }
-
-                    if ((!prev && !val) || (prev === val)) {
-                        return;
-                    }
-
-                    callbacks = getCallbacks(modKey, mod, i, w);
-
-                    j = i + modSeparator + mod;
-
-                    // Don't forget about boolean modifiers.
-                    if (prev) {
-                        self.removeClass(j + (prev === true ? emptyString : modSeparator + prev));
-                    }
-
-                    if (val) {
-                        self.addClass(j + (val === true ? emptyString : modSeparator + val));
-                    }
-
-                    Super(self, callbacks)(mod, val ? val : undefined, prev);
-                }
-            });
-
-            return this;
-        } else {
-            // Getting modifier.
-            tmp = getBlockElemModByClassName(getClassName(this[0]), blockName, elemName, mod, true);
-
-            for (i in tmp) {
-                tmp = tmp[i][0];
-                return tmp ? tmp.val || true : null;
-            }
-
-            return null;
-        }
     };
 
 // Extending Sizzle with our custom matchers.
@@ -382,13 +310,82 @@ $fn.bemCall = function(name) {
 };
 
 
-$fn.bemSetMod = function(where, mod, val) {
-    return bemSetGetMod.call(this, true, where, mod, val);
-};
+$fn.bemMod = function(mod, val) {
+    var blockName,
+        elemName,
+        tmp,
+        i;
 
+    if (isObject(mod)) {
+        if (blockName = mod.block) {
+            elemName = mod.elem;
+        }
 
-$fn.bemGetMod = function(where, mod) {
-    return bemSetGetMod.call(this, false, where, mod);
+        mod = mod.mod;
+    }
+
+    if (!mod) {
+        $.error('No modifier');
+        return;
+    }
+
+    if (val === undefined) {
+        // Getting modifier.
+        tmp = getBlockElemModByClassName(getClassName(this[0]), blockName, elemName, mod, true);
+
+        for (i in tmp) {
+            tmp = tmp[i][0];
+            return tmp ? tmp.val || true : undefined;
+        }
+
+        return undefined;
+    } else {
+        // Setting modifier.
+        if (typeof val === 'boolean') {
+            val = val ? true : emptyString;
+        }
+
+        this.each(function() {
+            var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
+                callbacks,
+                j,
+                w,
+                prev,
+                self = $(this);
+
+            for (i in whatToCall) {
+                w = whatToCall[i];
+                prev = undefined;
+
+                for (j = 0; j < w.length; j++) {
+                    if (w[j].mod === mod) {
+                        prev = w[j].val;
+                    }
+                }
+
+                if ((!prev && !val) || (prev === val)) {
+                    return;
+                }
+
+                callbacks = getCallbacks(modKey, mod, i, w);
+
+                j = i + modSeparator + mod;
+
+                // Don't forget about boolean modifiers.
+                if (prev) {
+                    self.removeClass(j + (prev === true ? emptyString : modSeparator + prev));
+                }
+
+                if (val) {
+                    self.addClass(j + (val === true ? emptyString : modSeparator + val));
+                }
+
+                Super(self, callbacks)(mod, val ? val : undefined, prev);
+            }
+        });
+
+        return this;
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
