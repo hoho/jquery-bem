@@ -11,22 +11,22 @@ var callstack,
     };
 
 
-$.BEM.decl('b-block1')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
     .onBuild(getCallback(1))
     .onBuild(getCallback(2));
 
-$.BEM.decl('b-block1')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
     .onBuild(getCallback(3));
 
-$.BEM.decl('b-block1', 'mod')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1', 'mod')
     .onBuild(getCallback(4));
 
-$.BEM.decl('b-block1', 'mod2', 'val')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1', 'mod2', 'val')
     .onBuild(getCallback(5));
 
 test('Build test', function() {
     callstack = [];
-    $.BEM.build('b-block1', 111, '222');
+    $.BEM.build(TEST_BLOCK_PREFIX + 'block1', 111, '222');
     deepEqual(callstack, [
         ['undefined', 112, '222', 3],
         ['undefined', 113, '222', 2],
@@ -34,7 +34,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod'}], context: document.body}, 111, '222');
+    $.BEM.build({block: TEST_BLOCK_PREFIX + 'block1', mods: [{mod: 'mod'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 4],
         ['body', 113, '222', 3],
@@ -43,7 +43,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}], context: document.body}, 111, '222');
+    $.BEM.build({block: TEST_BLOCK_PREFIX + 'block1', mods: [{mod: 'mod2', val: 'val'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 3],
@@ -52,7 +52,7 @@ test('Build test', function() {
     ]);
 
     callstack = [];
-    $.BEM.build({block: 'b-block1', mods: [{mod: 'mod2', val: 'val'}, {mod: 'mod'}], context: document.body}, 111, '222');
+    $.BEM.build({block: TEST_BLOCK_PREFIX + 'block1', mods: [{mod: 'mod2', val: 'val'}, {mod: 'mod'}], context: document.body}, 111, '222');
     deepEqual(callstack, [
         ['body', 112, '222', 5],
         ['body', 113, '222', 4],

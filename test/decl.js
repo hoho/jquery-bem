@@ -1,6 +1,6 @@
 var __declRet = [];
 
-$.BEM.decl('b-block1')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
     .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .onMod('100500', function($super, mod, val, prev) { __declRet.push('100500 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .elem('elem1')
@@ -19,10 +19,10 @@ $.BEM.decl('b-block1')
     .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '456' + ret; })
     .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '567' + ret; });
 
-$.BEM.decl('b-block1')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
     .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); });
 
-$.BEM.decl('b-block1', 'life')
+$.BEM.decl(TEST_BLOCK_PREFIX + 'block1', 'life')
     .onMod('zzz', function($super, mod, val, prev) { __declRet.push('zzz ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; })
 
@@ -35,7 +35,7 @@ function equalRet(func, desired, ret) {
 test('Modifier change test', function() {
     equalRet(
         function() {
-            $('%b-block1').eq(0)
+            $('%' + TEST_BLOCK_PREFIX + 'block1').eq(0)
                 .bemMod('love', 'not-so-cruel')
                 .bemMod('love', '');
         },
@@ -45,7 +45,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('%b-block5')
+            $('%' + TEST_BLOCK_PREFIX + 'block5')
                 .bemMod('love', 'not-so-cruel')
                 .bemMod('love', '');
         },
@@ -54,7 +54,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('%b-block1')
+            $('%' + TEST_BLOCK_PREFIX + 'block1')
                 .bemMod('love', 'cruel')
                 .bemMod('love', 'not-cruel')
                 .bemMod('love', 'cruel');
@@ -73,7 +73,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('%b-block1(elem1)')
+            $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)')
                 .bemMod('aaa', 'bbb')
                 .bemMod('aaa', '');
         },
@@ -82,7 +82,7 @@ test('Modifier change test', function() {
 
     equalRet(
         function() {
-            $('%b-block1(elem1)')
+            $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)')
                 .bemMod('blah', 'auch')
                 .bemMod('blah', 'zoo')
                 .bemMod('blah', '');
@@ -133,7 +133,7 @@ test('Modifier change test', function() {
     equalRet(
         function() {
             $('div')
-                .bemMod({block: 'b-block4', mod: 'zzz'}, 'ololo')
+                .bemMod({block: TEST_BLOCK_PREFIX + 'block4', mod: 'zzz'}, 'ololo')
                 .bemMod('zzz', ''); },
         []
     );
@@ -141,7 +141,7 @@ test('Modifier change test', function() {
     equalRet(
         function() {
             $('div')
-                .bemMod({block: 'b-block1', mod: 'zzz'}, 'ololo')
+                .bemMod({block: TEST_BLOCK_PREFIX + 'block1', mod: 'zzz'}, 'ololo')
                 .bemMod('zzz', '');
         },
         ['zzz 3 zzz ololo undefined',
@@ -151,8 +151,8 @@ test('Modifier change test', function() {
     equalRet(
         function() {
             $('div, span')
-                .bemMod({block: 'b-block1', elem: 'elem1', mod: 'blah'}, 'ololo')
-                .bemMod({block: 'b-block1', elem: 'elem1', mod: 'blah'}, '');
+                .bemMod({block: TEST_BLOCK_PREFIX + 'block1', elem: 'elem1', mod: 'blah'}, 'ololo')
+                .bemMod({block: TEST_BLOCK_PREFIX + 'block1', elem: 'elem1', mod: 'blah'}, '');
         },
         ['blah 6-1 blah ololo undefined',
          'blah 6-1 blah undefined ololo',
@@ -182,59 +182,59 @@ test('Modifier change test', function() {
 
 test('Call test', function() {
     equalRet(
-        function() { return $('%b-block1').bemCall('m1', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1').bemCall('m1', 11, 22); },
         ['m1 1 11 22'],
         '345'
     );
 
     equalRet(
-        function() { return $('%b-block1[id=3]').bemCall('m1', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1[id=3]').bemCall('m1', 11, 22); },
         ['m1 3 22 11', 'm1-2 3 11 22'],
         'zzz345'
     );
 
     equalRet(
-        function() { return $('%b-block1').bemCall('m2', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1').bemCall('m2', 11, 22); },
         ['m2 1 22 11', 'm2-2 1 11 22'],
         '567456'
     );
 
     equalRet(
-        function() { return $('%b-block100500').bemCall('m2', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block100500').bemCall('m2', 11, 22); },
         []
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall('em1', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)').bemCall('em1', 11, 22); },
         ['em1 6-1 22 11', 'em1-1 6-1 11 22'],
         '123-2 123'
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall('em2', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)').bemCall('em2', 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('%b-block2(elem1)').bemCall('em1', 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block2(elem1)').bemCall('em1', 11, 22); },
         []
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall({call: 'em2'}, 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)').bemCall({call: 'em2'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('%b-block1(elem1)').bemCall({call: 'em2', block: 'b-block1', elem: 'elem1'}, 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1(elem1)').bemCall({call: 'em2', block: TEST_BLOCK_PREFIX + 'block1', elem: 'elem1'}, 11, 22); },
         ['em2 6-1 11 22'],
         '234'
     );
 
     equalRet(
-        function() { return $('%b-block1').eq(2).bemCall({call: 'm2', block: 'b-block1'}, 11, 22); },
+        function() { return $('%' + TEST_BLOCK_PREFIX + 'block1').eq(2).bemCall({call: 'm2', block: TEST_BLOCK_PREFIX + 'block1'}, 11, 22); },
         ['m2 3 22 11', 'm2-2 3 11 22'],
         '567456'
     );

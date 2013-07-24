@@ -1,12 +1,12 @@
 /*!
- * jQuery BEM v0.2.2, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.2.3, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
 (function($, undefined) {
 ///////////////////////////////////////////////////////////////////////////////
 
-var blockPrefixes = '(?:b\\-|l\\-)',
+var blockPrefixes = '(?:b-|l-)',
     elemSeparator = '__',
     modSeparator = '_',
     whitespace = '[\\x20\\t\\r\\n\\f]',
@@ -160,13 +160,6 @@ var blockPrefixes = '(?:b\\-|l\\-)',
         return ret;
     };
 
-// Extending Sizzle with our custom matchers.
-m.BLOCK = new RegExpre('^%(' + blockPrefixes + characterEncoding + '|\\*)');
-m.ELEM = new RegExpre('^%(' + blockPrefixes + characterEncoding + '|\\*)\\(' +
-                      whitespace + '*(' + characterEncoding + '|\\*)' + whitespace +
-                      '*\\)');
-m.MOD = new RegExpre('^' + modifiers);
-
 
 // Handlers for our custom selectors (ELEM first, BLOCK second — order matters).
 f.ELEM = function(blockName, elemName) {
@@ -275,8 +268,27 @@ $.BEM = {
             context,
             getCallbacks(buildKey, buildKey, name, mods || [])
         ).apply(this, args);
+    },
+
+    setup: function(settings) {
+        if (settings) {
+            if (settings.prefixes) {
+                blockPrefixes = settings.prefixes;
+            }
+        }
+
+        // Extending Sizzle with our custom matchers.
+        m.BLOCK = new RegExpre('^%(' + blockPrefixes + characterEncoding + '|\\*)');
+        m.ELEM = new RegExpre('^%(' + blockPrefixes + characterEncoding + '|\\*)\\(' +
+                              whitespace + '*(' + characterEncoding + '|\\*)' + whitespace +
+                              '*\\)');
+        m.MOD = new RegExpre('^' + modifiers);
+
     }
 };
+
+
+$.BEM.setup();
 
 
 $fn.bemCall = function(name) {

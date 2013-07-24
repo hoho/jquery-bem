@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!--<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">-->
+    <link rel="stylesheet" href="3rdparty/qunit-1.10.0.css">
+
+    <!--<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>-->
+    <script src="3rdparty/jquery-1.10.2.min.js"></script>
+
+    <script src="../jquery-bem.js"></script>
+
+    <!--<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>-->
+    <script src="3rdparty/qunit-1.10.0.js"></script>
+
+    <script>
+        $.BEM.setup({prefixes: '(?:ololo-)'});
+        TEST_BLOCK_PREFIX = 'ololo-';
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="test-data">
+        <div id="1" class="ololo-block1"></div>
+        <div id="2" class="ololo-block1 ololo-block1_love_cruel"></div>
+        <div id="3" class="ololo-block1 ololo-block1_love_cruel ololo-block1_life_hard ololo-block1_bool"></div>
+
+        <div id="4" class="ololo-block2">
+            <div id="4-1" class="ololo-block2__elem1"></div>
+            <div id="4-2" class="ololo-block2__elem2"></div>
+            <div id="4-3" class="ololo-block3"></div>
+            <div id="4-4" class="ololo-block2__elem2 ololo-block2__elem2_boo_moo"></div>
+            <div id="4-5" class="ololo-block2__elem2 ololo-block2__elem2_boo_moo ololo-block2__elem2_ooo_zoo  ololo-block2__elem2_bool2"></div>
+            <div id="4-6" class="ololo-block2__elem3"></div>
+        </div>
+        <div>
+            <div id="6" class="ololo-block1">
+                <a>
+                    <span id="6-1" class="ololo-block1__elem1"></span>
+                </a>
+            </div>
+        </div>
+        <div id="7" class="ololo-block2 ololo-block3"></div>
+        <div id="8" class="ololo-block4">
+            <div id="8-1" class="ololo-block5 ololo-block4__elem1"></div>
+        </div>
+        <div id="9" class="ololo-block4 ololo-block4_momo_va-lue ololo-block4_bool"></div>
+        <div id="10" class="ololo-block4 ololo-block4_momo_value"></div>
+    </div>
+
+    <script src="selectors.js"></script>
+    <script src="decl.js"></script>
+    <script src="modifiers.js"></script>
+    <script src="build.js"></script>
+</body>
+</html>
