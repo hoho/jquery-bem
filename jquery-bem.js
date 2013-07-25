@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.2.3, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.3.0, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -256,13 +256,19 @@ $.BEM = {
     build: function(name) {
         var args = sliceFunc.call(arguments, 1),
             mods,
-            context;
+            context,
+            obj;
 
         if (isObject(name)) {
+            obj = name;
             mods = name.mods;
             context = name.context;
             name = name.block;
+        } else {
+            obj = {block: name};
         }
+
+        args.unshift(obj);
 
         return Super(
             context,
@@ -283,7 +289,24 @@ $.BEM = {
                               whitespace + '*(' + characterEncoding + '|\\*)' + whitespace +
                               '*\\)');
         m.MOD = new RegExpre('^' + modifiers);
+    },
 
+    className: function(it) {
+        if (!it) { return emptyString; }
+
+        var ret = [], i, b, m, mv;
+
+        if (b = it.block) {
+            ret.push(b);
+            if (m = it.mods) {
+                for (i = 0; i < m.length; i++) {
+                    mv = m[i];
+                    mv.val && ret.push(b + modSeparator + mv.mod + modSeparator + mv.val);
+                }
+            }
+        }
+
+        return ret.join(' ');
     }
 };
 
