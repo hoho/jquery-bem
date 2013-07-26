@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.3.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.4.0, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -111,9 +111,9 @@ var blockPrefixes = '(?:b-|l-)',
                 }
 
                 _ = b + (e ? elemSeparator + e : emptyString);
-                if (!ret[_]) { ret[_] = []; }
+                if (!ret[_]) { ret[_] = {}; }
                 // v is a modifier value or undefined for boolean modifiers.
-                if (m) { ret[_].push({mod: m, val: v || true}); }
+                if (m) { ret[_][m] = v || true; }
             }
         );
 
@@ -133,16 +133,20 @@ var blockPrefixes = '(?:b-|l-)',
     },
 
     getCallbacks = function(part, name, key, mods) {
-        var matcher = {}, i, j, k, ret = [];
+        var matcher = {}, i, j, k, l, ret = [];
 
         matcher[k = part + commaString + name + commaString + key] = true;
 
         k += modSeparator;
 
-        for (i = 0; i < mods.length; i++) {
-            matcher[j = k + mods[i].mod] = true;
+        for (i in mods) {
+            matcher[j = k + i] = true;
 
-            matcher[j + modSeparator + mods[i].val] = true;
+            if (l = mods[i]) {
+                if (l !== true) {
+                    matcher[j + modSeparator + l] = true;
+                }
+            }
         }
 
         mods = _decl[key];
@@ -255,7 +259,9 @@ $.BEM = {
 
     build: function(name) {
         var args = sliceFunc.call(arguments, 1),
+            mod,
             mods,
+            matchMods,
             context,
             blockMeta = {};
 
@@ -271,7 +277,7 @@ $.BEM = {
 
         return Super(
             context,
-            getCallbacks(buildKey, buildKey, name, mods || [])
+            getCallbacks(buildKey, buildKey, name, mods || {})
         ).apply(this, args);
     },
 
@@ -296,19 +302,17 @@ $.BEM = {
         if (!blockMeta) { return emptyString; }
 
         var ret = [],
-            i,
             block,
             mods,
-            modval,
+            mod,
             val;
 
         if (block = blockMeta.block) {
             ret.push(block);
             if (mods = blockMeta.mods) {
-                for (i = 0; i < mods.length; i++) {
-                    modval = mods[i];
-                    if (val = modval.val) {
-                        ret.push(block + modSeparator + modval.mod + (val === true ? emptyString : modSeparator + val));
+                for (mod in mods) {
+                    if (val = mods[mod]) {
+                        ret.push(block + modSeparator + mod + (val === true ? emptyString : modSeparator + val));
                     }
                 }
             }
@@ -378,8 +382,13 @@ $fn.bemMod = function(mod, val) {
         tmp = getBlockElemModByClassName(getClassName(self[0]), blockName, elemName, mod, true);
 
         for (i in tmp) {
-            tmp = tmp[i][0];
-            return tmp ? tmp.val || true : undefined;
+            tmp = tmp[i];
+
+            for (i in tmp) {
+                return tmp[i];
+            }
+
+            break;
         }
 
         return undefined;
@@ -401,9 +410,9 @@ $fn.bemMod = function(mod, val) {
                 w = whatToCall[i];
                 prev = undefined;
 
-                for (j = 0; j < w.length; j++) {
-                    if (w[j].mod === mod) {
-                        prev = w[j].val;
+                for (j in w) {
+                    if (j === mod) {
+                        prev = w[j];
                     }
                 }
 
