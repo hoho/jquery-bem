@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.3.0, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.3.1, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -257,18 +257,17 @@ $.BEM = {
         var args = sliceFunc.call(arguments, 1),
             mods,
             context,
-            obj;
+            blockMeta = {};
 
         if (isObject(name)) {
-            obj = name;
-            mods = name.mods;
             context = name.context;
-            name = name.block;
+            blockMeta.mods = mods = name.mods;
+            blockMeta.block = name = name.block;
         } else {
-            obj = {block: name};
+            blockMeta.block = name;
         }
 
-        args.unshift(obj);
+        args.unshift(blockMeta);
 
         return Super(
             context,
@@ -291,17 +290,26 @@ $.BEM = {
         m.MOD = new RegExpre('^' + modifiers);
     },
 
-    className: function(it) {
-        if (!it) { return emptyString; }
+    className: function(blockMeta) {
+        // Helper method to concatenate 'class' attribute by the structure
+        // passed to onBuild() callbacks.
+        if (!blockMeta) { return emptyString; }
 
-        var ret = [], i, b, m, mv;
+        var ret = [],
+            i,
+            block,
+            mods,
+            modval,
+            val;
 
-        if (b = it.block) {
-            ret.push(b);
-            if (m = it.mods) {
-                for (i = 0; i < m.length; i++) {
-                    mv = m[i];
-                    mv.val && ret.push(b + modSeparator + mv.mod + modSeparator + mv.val);
+        if (block = blockMeta.block) {
+            ret.push(block);
+            if (mods = blockMeta.mods) {
+                for (i = 0; i < mods.length; i++) {
+                    modval = mods[i];
+                    if (val = modval.val) {
+                        ret.push(block + modSeparator + modval.mod + (val === true ? emptyString : modSeparator + val));
+                    }
                 }
             }
         }
