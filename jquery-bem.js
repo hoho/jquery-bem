@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.4.0, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.4.1, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -357,7 +357,7 @@ $fn.bemCall = function(name) {
 };
 
 
-$fn.bemMod = function(mod, val) {
+$fn.bemMod = function(mod, val, force) {
     var blockName,
         elemName,
         tmp,
@@ -416,7 +416,7 @@ $fn.bemMod = function(mod, val) {
                     }
                 }
 
-                if ((!prev && !val) || (prev === val)) {
+                if (!force && ((!prev && !val) || (prev === val))) {
                     return;
                 }
 

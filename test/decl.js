@@ -178,6 +178,23 @@ test('Modifier change test', function() {
         ['zzz 3 zzz true undefined',
          'zzz 3 zzz undefined true']
     );
+
+    equalRet(
+        function() {
+            $('%' + TEST_BLOCK_PREFIX + 'block1').eq(0)
+                .bemMod('love', 'auch')
+                .bemMod('love', 'auch')
+                .bemMod('love', 'oops')
+                .bemMod('love', 'oops', true)
+                .bemMod('love', '')
+                .bemMod('love', '', true);
+        },
+        ["love 1 love auch cruel", "love-2 1 love auch cruel",
+         "love 1 love oops auch", "love-2 1 love oops auch",
+         "love 1 love oops oops", "love-2 1 love oops oops",
+         "love 1 love undefined oops", "love-2 1 love undefined oops",
+         "love 1 love undefined undefined", "love-2 1 love undefined undefined"]
+    );
 });
 
 test('Call test', function() {
