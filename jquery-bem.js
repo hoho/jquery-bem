@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.4.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.5.0, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -32,19 +32,23 @@ var blockPrefixes = '(?:b-|l-)',
     f = $.expr.filter,
 
     _decl = {}, // _decl is a dictionary to store declared callbacks.
+    _declMap = {},
 
     isObject = function(obj) {
         return typeof obj === 'object';
     },
 
-    Block = function(name, mod, val) {
+    Block = function(isDecl, name, mod, val) {
+        this._d = isDecl;
         this._k = name;
         this._c = name + (mod ? modSeparator + mod + (val ? modSeparator + val : emptyString) : emptyString);
     },
 
-    Element = function(block, name, mod, val) {
-        this._b = block;
-        this._c = (this._k = block._k + elemSeparator + name) +
+    Element = function(block, name, mod, val/**/, self) {
+        self = this;
+        self._b = block;
+        self._d = block._d;
+        self._c = ((self._k = block._k + elemSeparator + name)) +
                   (mod ? modSeparator + mod + (val ? modSeparator + val : emptyString) : emptyString);
     },
 
@@ -68,34 +72,45 @@ var blockPrefixes = '(?:b-|l-)',
         );
     },
 
-    declCallback = function(what, name, callback/**/, c, i, self) {
+    declCallback = function(isDecl, what, name, callback/**/, c, mapKey, key, self) {
         self = this;
 
-        if (!(c = _decl[self._k])) {
+        if (!((c = _decl[self._k]))) {
             _decl[self._k] = c = [];
         }
 
-        if (isObject(name)) {
-            for (i in name) {
-                c.push([what + commaString + i + commaString + self._c, name[i]]);
-            }
-        } else {
-            c.push([what + commaString + name + commaString + self._c, callback]);
+        mapKey = what + commaString + name + commaString;
+        key = mapKey + self._c;
+        mapKey += self._k;
+
+        if (isDecl && (mapKey in _declMap)) {
+            $.error('Redeclaration in ' + self._c);
         }
+
+        if (!isDecl && !(mapKey in _declMap)) {
+            $.error('Not declared ' + self._c);
+        }
+
+        _declMap[mapKey] = true;
+
+        c.push({k: key, c: callback, d: isDecl});
 
         return self;
     },
 
-    Super = function(context, callbacks/**/, position) {
+    Super = function(context, callbacks/**/, position, args, cba) {
         position = callbacks.length - 1;
 
         return function wrapper() {
             if (position >= 0) {
-                var args = sliceFunc.call(arguments);
+                args = sliceFunc.call(arguments);
+                cba = callbacks[position--];
 
-                args.unshift(wrapper);
+                if (!cba.d) {
+                    args.unshift(wrapper);
+                }
 
-                return callbacks[position--].apply(context, args);
+                return cba.c.apply(context, args);
             }
         };
     },
@@ -155,8 +170,8 @@ var blockPrefixes = '(?:b-|l-)',
             for (i = 0; i < mods.length; i++) {
                 j = mods[i];
 
-                if (j[0] in matcher) {
-                    ret.push(j[1]);
+                if (j.k in matcher) {
+                    ret.push(j);
                 }
             }
         }
@@ -226,15 +241,15 @@ f.MOD = function(name, operator, check) {
 
 Block[prototype] = blockProto = {
     onBuild: function(callback) {
-        return declCallback.call(this, buildKey, buildKey, callback);
+        return declCallback.call(this, this._d, buildKey, buildKey, callback);
     },
 
     onMod: function(name, callback) {
-        return declCallback.call(this, modKey, name, callback);
+        return declCallback.call(this, this._d, modKey, name, callback);
     },
 
     onCall: function(name, callback) {
-        return declCallback.call(this, callKey, name, callback);
+        return declCallback.call(this, this._d, callKey, name, callback);
     },
 
     elem: function(name, mod, val) {
@@ -244,6 +259,7 @@ Block[prototype] = blockProto = {
 
 
 Element[prototype] = {
+    onBuild: blockProto.onBuild,
     onMod: blockProto.onMod,
     onCall: blockProto.onCall,
     end: function() {
@@ -254,14 +270,16 @@ Element[prototype] = {
 
 $.BEM = {
     decl: function(name, mod, val) {
-        return new Block(name, mod, val);
+        return new Block(true, name, mod, val);
+    },
+
+    extend: function(name, mod, val) {
+        return new Block(false, name, mod, val);
     },
 
     build: function(name) {
         var args = sliceFunc.call(arguments, 1),
-            mod,
             mods,
-            matchMods,
             context,
             blockMeta = {};
 
@@ -374,7 +392,6 @@ $fn.bemMod = function(mod, val, force) {
 
     if (!mod) {
         $.error('No modifier');
-        return;
     }
 
     if (val === undefined) {

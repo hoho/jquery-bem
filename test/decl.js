@@ -1,29 +1,37 @@
+// TODO: Test redeclaration and no declaration exceptions.
+
 var __declRet = [];
 
 $.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
-    .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
-    .onMod('100500', function($super, mod, val, prev) { __declRet.push('100500 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
+    .onMod('love', function(mod, val, prev) { __declRet.push('love ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
+    .onMod('100500', function(mod, val, prev) { __declRet.push('100500 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .elem('elem1')
-        .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
-        .onCall('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123' + ret; })
-        .onCall('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1-1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123-2 ' + ret; })
-        .onCall('em2', function($super, p1, p2) { __declRet.push('em2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '234'; })
+        .onMod('blah', function(mod, val, prev) { __declRet.push('blah ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
+        .onCall('em1', function(p1, p2) { var ret = ''; __declRet.push('em1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123' + ret; })
+        .onCall('em2', function(p1, p2) { __declRet.push('em2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '234'; })
         .end()
+    .onCall('m1', function(p1, p2) { var ret = ''; __declRet.push('m1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '345' + ret; })
+    .onCall('m2', function(p1, p2) { var ret = ''; __declRet.push('m2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '456' + ret; });
+
+$.BEM.extend(TEST_BLOCK_PREFIX + 'block1')
     .elem('elem1', 'blah', 'auch')
         .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah-auch ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
         .end()
     .elem('elem1', 'blah')
         .onMod('blah', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('blah-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
+        .end();
+
+$.BEM.extend(TEST_BLOCK_PREFIX + 'block1')
+    .elem('elem1')
+        .onCall('em1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('em1-1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '123-2 ' + ret; })
         .end()
-    .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '345' + ret; })
-    .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '456' + ret; })
+    .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
     .onCall('m2', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m2-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return '567' + ret; });
 
-$.BEM.decl(TEST_BLOCK_PREFIX + 'block1')
-    .onMod('love', function($super, mod, val, prev) { $super(mod, val, prev); __declRet.push('love-2 ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); });
-
 $.BEM.decl(TEST_BLOCK_PREFIX + 'block1', 'life')
-    .onMod('zzz', function($super, mod, val, prev) { __declRet.push('zzz ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); })
+    .onMod('zzz', function(mod, val, prev) { __declRet.push('zzz ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); });
+
+$.BEM.extend(TEST_BLOCK_PREFIX + 'block1', 'life')
     .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; })
 
 function equalRet(func, desired, ret) {
