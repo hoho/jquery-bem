@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.5.0, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.5.1, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -281,17 +281,28 @@ $.BEM = {
         var args = sliceFunc.call(arguments, 1),
             mods,
             context,
-            blockMeta = {};
+            details = {};
 
         if (isObject(name)) {
             context = name.context;
-            blockMeta.mods = mods = name.mods;
-            blockMeta.block = name = name.block;
+            details.block = name.block;
+
+            mods = name.mods;
+            if (mods) {
+                details.mods = mods;
+            }
+
+            if (name.elem) {
+                details.elem = name.elem;
+                name = name.block + elemSeparator + name.elem;
+            } else {
+                name = name.block;
+            }
         } else {
-            blockMeta.block = name;
+            details.block = name;
         }
 
-        args.unshift(blockMeta);
+        args.unshift(details);
 
         return Super(
             context,
@@ -314,23 +325,28 @@ $.BEM = {
         m.MOD = new RegExpre('^' + modifiers);
     },
 
-    className: function(blockMeta) {
+    className: function(details) {
         // Helper method to concatenate 'class' attribute by the structure
         // passed to onBuild() callbacks.
-        if (!blockMeta) { return emptyString; }
+        if (!details) { return emptyString; }
 
         var ret = [],
-            block,
+            be,
             mods,
             mod,
             val;
 
-        if (block = blockMeta.block) {
-            ret.push(block);
-            if (mods = blockMeta.mods) {
+        if (be = details.block) {
+            if (details.elem) {
+                be += elemSeparator + details.elem;
+            }
+
+            ret.push(be);
+
+            if (mods = details.mods) {
                 for (mod in mods) {
                     if (val = mods[mod]) {
-                        ret.push(block + modSeparator + mod + (val === true ? emptyString : modSeparator + val));
+                        ret.push(be + modSeparator + mod + (val === true ? emptyString : modSeparator + val));
                     }
                 }
             }

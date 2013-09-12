@@ -32,7 +32,7 @@ $.BEM.decl(TEST_BLOCK_PREFIX + 'block1', 'life')
     .onMod('zzz', function(mod, val, prev) { __declRet.push('zzz ' + $(this).attr('id') + ' ' + mod + ' ' + val + ' ' + prev); });
 
 $.BEM.extend(TEST_BLOCK_PREFIX + 'block1', 'life')
-    .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; })
+    .onCall('m1', function($super, p1, p2) { var ret = $super(p2, p1) || ''; __declRet.push('m1-2 ' + $(this).attr('id') + ' ' + p1 + ' ' + p2); return 'zzz' + ret; });
 
 function equalRet(func, desired, ret) {
     __declRet = [];
