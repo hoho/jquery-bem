@@ -104,20 +104,20 @@ test('Build test', function() {
     callstack = [];
     $.BEM.build({block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element'}, 111, '222');
     deepEqual(callstack, [
-        {block: 'b-build-block', elem: 'some-element'},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element'},
         ['undefined', 112, '222', 22],
-        {block: 'b-build-block', elem: 'some-element'},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element'},
         ['undefined', 113, '222', 11]
     ]);
 
     callstack = [];
     $.BEM.build({block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val'}, context: document.body}, 111, '222');
     deepEqual(callstack, [
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val'}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val'}},
         ['body', 112, '222', 44],
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val'}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val'}},
         ['body', 113, '222', 22],
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val'}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val'}},
         ['body', 114, '222', 11]
     ]);
     deepEqual($.BEM.className(callstack[0]), TEST_BLOCK_PREFIX + 'build-block__some-element ' + TEST_BLOCK_PREFIX + 'build-block__some-element_mod_val');
@@ -125,13 +125,13 @@ test('Build test', function() {
     callstack = [];
     $.BEM.build({block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod2: 'val2', mod: 'val', mod3: true}, context: document.body}, 111, '222');
     deepEqual(callstack, [
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
         ['body', 112, '222', 55],
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
         ['body', 113, '222', 44],
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
         ['body', 114, '222', 22],
-        {block: 'b-build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
+        {block: TEST_BLOCK_PREFIX + 'build-block', elem: 'some-element', mods: {mod: 'val', mod2: 'val2', mod3: true}},
         ['body', 115, '222', 11]
     ]);
     deepEqual($.BEM.className(callstack[0]), TEST_BLOCK_PREFIX + 'build-block__some-element ' + TEST_BLOCK_PREFIX + 'build-block__some-element_mod2_val2 ' + TEST_BLOCK_PREFIX + 'build-block__some-element_mod_val ' + TEST_BLOCK_PREFIX + 'build-block__some-element_mod3');

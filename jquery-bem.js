@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.5.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.6.0, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -25,6 +25,10 @@ var blockPrefixes = '(?:b-|l-)',
     $fn = $.fn,
     emptyString = '',
     commaString = ',',
+
+    bemData = '__bem',
+    bemMod = 'bemMod',
+    bemCall = 'bemCall',
 
     blockProto,
 
@@ -98,8 +102,39 @@ var blockPrefixes = '(?:b-|l-)',
         return self;
     },
 
-    Super = function(context, callbacks/**/, position, args, cba) {
+    BE = function(be, jq/**/, self) {
+        self = this;
+
+        self.$ = jq;
+
+        self[bemMod] = function(mod, val, force) {
+            jq[bemMod]({block: be, mod: mod}, val, force);
+            return self;
+        };
+
+        self[bemCall] = function(name) {
+            var args = sliceFunc.call(arguments, 1);
+            args.unshift({block: be, call: name});
+            return jq[bemCall].apply(jq, args);
+        };
+    },
+
+    Super = function(be, context, callbacks/**/, position, jq, args, cba) {
         position = callbacks.length - 1;
+
+        if (be) {
+            jq = context;
+
+            if (!(context = context.data(bemData))) {
+                jq.data(bemData, (context = {}));
+            }
+
+            if (!context[be]) {
+                context[be] = new BE(be, jq);
+            }
+
+            context = context[be];
+        }
 
         return function wrapper() {
             if (position >= 0) {
@@ -305,6 +340,7 @@ $.BEM = {
         args.unshift(details);
 
         return Super(
+            undefined,
             context,
             getCallbacks(buildKey, buildKey, name, mods || {})
         ).apply(this, args);
@@ -343,9 +379,9 @@ $.BEM = {
 
             ret.push(be);
 
-            if (mods = details.mods) {
+            if ((mods = details.mods)) {
                 for (mod in mods) {
-                    if (val = mods[mod]) {
+                    if ((val = mods[mod])) {
                         ret.push(be + modSeparator + mod + (val === true ? emptyString : modSeparator + val));
                     }
                 }
@@ -360,7 +396,7 @@ $.BEM = {
 $.BEM.setup();
 
 
-$fn.bemCall = function(name) {
+$fn[bemCall] = function(name) {
     var blockName,
         elemName,
         args = sliceFunc.call(arguments, 1),
@@ -369,7 +405,7 @@ $fn.bemCall = function(name) {
         i;
 
     if (isObject(name)) {
-        if (blockName = name.block) {
+        if ((blockName = name.block)) {
             elemName = name.elem;
         }
 
@@ -383,6 +419,7 @@ $fn.bemCall = function(name) {
 
         for (i in whatToCall) {
             return Super(
+                i,
                 self,
                 getCallbacks(callKey, name, i, whatToCall[i])
             ).apply(this, args);
@@ -391,7 +428,7 @@ $fn.bemCall = function(name) {
 };
 
 
-$fn.bemMod = function(mod, val, force) {
+$fn[bemMod] = function(mod, val, force) {
     var blockName,
         elemName,
         tmp,
@@ -466,7 +503,7 @@ $fn.bemMod = function(mod, val, force) {
                     self.addClass(j + (val === true ? emptyString : modSeparator + val));
                 }
 
-                Super(self, callbacks)(mod, val ? val : undefined, prev);
+                Super(i, self, callbacks)(mod, val || undefined, prev);
             }
         });
 
