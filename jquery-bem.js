@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.6.0, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.6.1, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -26,9 +26,14 @@ var blockPrefixes = '(?:b-|l-)',
     emptyString = '',
     commaString = ',',
 
-    bemData = '__bem',
-    bemMod = 'bemMod',
-    bemCall = 'bemCall',
+    bemDataString = '__bem',
+    bemModString = 'bemMod',
+    bemCallString = 'bemCall',
+
+    blockString = 'block',
+    elemString = 'elem',
+    callString = 'call',
+    applyString = 'apply',
 
     blockProto,
 
@@ -61,7 +66,7 @@ var blockPrefixes = '(?:b-|l-)',
             (isObject(className) ?
                 className.baseVal
                 :
-                className || (elem.getAttribute !== undefined && elem.getAttribute('class')) || emptyString)
+                className || (elem.getAttribute && elem.getAttribute('class')) || emptyString)
             :
             emptyString;
     },
@@ -107,15 +112,15 @@ var blockPrefixes = '(?:b-|l-)',
 
         self.$ = jq;
 
-        self[bemMod] = function(mod, val, force) {
-            jq[bemMod]({block: be, mod: mod}, val, force);
+        self[bemModString] = function(mod, val, force) {
+            jq[bemModString]({block: be, mod: mod}, val, force);
             return self;
         };
 
-        self[bemCall] = function(name) {
-            var args = sliceFunc.call(arguments, 1);
+        self[bemCallString] = function(name) {
+            var args = sliceFunc[callString](arguments, 1);
             args.unshift({block: be, call: name});
-            return jq[bemCall].apply(jq, args);
+            return jq[bemCallString][applyString](jq, args);
         };
     },
 
@@ -125,8 +130,8 @@ var blockPrefixes = '(?:b-|l-)',
         if (be) {
             jq = context;
 
-            if (!(context = context.data(bemData))) {
-                jq.data(bemData, (context = {}));
+            if (!(context = context.data(bemDataString))) {
+                jq.data(bemDataString, (context = {}));
             }
 
             if (!context[be]) {
@@ -138,14 +143,14 @@ var blockPrefixes = '(?:b-|l-)',
 
         return function wrapper() {
             if (position >= 0) {
-                args = sliceFunc.call(arguments);
+                args = sliceFunc[callString](arguments);
                 cba = callbacks[position--];
 
                 if (!cba.d) {
                     args.unshift(wrapper);
                 }
 
-                return cba.c.apply(context, args);
+                return cba.c[applyString](context, args);
             }
         };
     },
@@ -276,15 +281,15 @@ f.MOD = function(name, operator, check) {
 
 Block[prototype] = blockProto = {
     onBuild: function(callback) {
-        return declCallback.call(this, this._d, buildKey, buildKey, callback);
+        return declCallback[callString](this, this._d, buildKey, buildKey, callback);
     },
 
     onMod: function(name, callback) {
-        return declCallback.call(this, this._d, modKey, name, callback);
+        return declCallback[callString](this, this._d, modKey, name, callback);
     },
 
     onCall: function(name, callback) {
-        return declCallback.call(this, this._d, callKey, name, callback);
+        return declCallback[callString](this, this._d, callKey, name, callback);
     },
 
     elem: function(name, mod, val) {
@@ -313,28 +318,28 @@ $.BEM = {
     },
 
     build: function(name) {
-        var args = sliceFunc.call(arguments, 1),
+        var args = sliceFunc[callString](arguments, 1),
             mods,
             context,
             details = {};
 
         if (isObject(name)) {
             context = name.context;
-            details.block = name.block;
+            details[blockString] = name[blockString];
 
             mods = name.mods;
             if (mods) {
                 details.mods = mods;
             }
 
-            if (name.elem) {
-                details.elem = name.elem;
-                name = name.block + elemSeparator + name.elem;
+            if (name[elemString]) {
+                details[elemString] = name[elemString];
+                name = name[blockString] + elemSeparator + name[elemString];
             } else {
-                name = name.block;
+                name = name[blockString];
             }
         } else {
-            details.block = name;
+            details[blockString] = name;
         }
 
         args.unshift(details);
@@ -343,7 +348,7 @@ $.BEM = {
             undefined,
             context,
             getCallbacks(buildKey, buildKey, name, mods || {})
-        ).apply(this, args);
+        )[applyString](this, args);
     },
 
     setup: function(settings) {
@@ -372,9 +377,9 @@ $.BEM = {
             mod,
             val;
 
-        if (be = details.block) {
-            if (details.elem) {
-                be += elemSeparator + details.elem;
+        if (be = details[blockString]) {
+            if (details[elemString]) {
+                be += elemSeparator + details[elemString];
             }
 
             ret.push(be);
@@ -396,20 +401,20 @@ $.BEM = {
 $.BEM.setup();
 
 
-$fn[bemCall] = function(name) {
+$fn[bemCallString] = function(name) {
     var blockName,
         elemName,
-        args = sliceFunc.call(arguments, 1),
+        args = sliceFunc[callString](arguments, 1),
         self = this.eq(0),
         whatToCall,
         i;
 
     if (isObject(name)) {
-        if ((blockName = name.block)) {
-            elemName = name.elem;
+        if ((blockName = name[blockString])) {
+            elemName = name[elemString];
         }
 
-        name = name.call;
+        name = name[callString];
     }
 
     if (name) {
@@ -422,13 +427,13 @@ $fn[bemCall] = function(name) {
                 i,
                 self,
                 getCallbacks(callKey, name, i, whatToCall[i])
-            ).apply(this, args);
+            )[applyString](this, args);
         }
     }
 };
 
 
-$fn[bemMod] = function(mod, val, force) {
+$fn[bemModString] = function(mod, val, force) {
     var blockName,
         elemName,
         tmp,
@@ -436,8 +441,8 @@ $fn[bemMod] = function(mod, val, force) {
         self = this;
 
     if (isObject(mod)) {
-        if (blockName = mod.block) {
-            elemName = mod.elem;
+        if (blockName = mod[blockString]) {
+            elemName = mod[elemString];
         }
 
         mod = mod.mod;
