@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.6.1, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.6.2, https://github.com/hoho/jquery-bem
  * Copyright 2012-2013 Marat Abdullin
  * Released under the MIT license
  */
@@ -476,6 +476,7 @@ $fn[bemModString] = function(mod, val, force) {
         self.each(function() {
             var whatToCall = getBlockElemModByClassName(getClassName(this), blockName, elemName),
                 callbacks,
+                i,
                 j,
                 w,
                 prev,
