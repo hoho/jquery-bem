@@ -1,0 +1,31 @@
+{
+  "name": "jquery-bem",
+  "version": "0.6.1",
+  "homepage": "https://github.com/hoho/jquery-bem",
+  "authors": [
+    "Marat Abdullin <dakota@brokenpipe.ru>"
+  ],
+  "description": "Lightweight BEM plugin for jQuery",
+  "main": "jquery-bem.js",
+  "keywords": [
+    "jQuery",
+    "BEM"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "*.md",
+    "bower.json",
+    "Gruntfile.js"
+  ],
+  "dependencies": {
+    "jquery": "~1.10.2"
+  },
+  "devDependencies": {
+    "qunit": "~1.12.0"
+  }
+}
+
