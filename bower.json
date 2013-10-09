@@ -18,14 +18,14 @@
     "bower_components",
     "test",
     "*.md",
+    "package.json",
     "bower.json",
     "Gruntfile.js"
   ],
   "dependencies": {
-    "jquery": "~1.10.2"
+    "jquery": ">=1.10.2"
   },
   "devDependencies": {
     "qunit": "~1.12.0"
   }
 }
-
