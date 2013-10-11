@@ -19,10 +19,6 @@ module.exports = function(grunt) {
             }
         },
 
-        qunit: {
-            all: ['test/**/*.html']
-        },
-
         uglify: {
             options: {
                 preserveComments: 'some',
@@ -32,12 +28,16 @@ module.exports = function(grunt) {
                 src: '<%= pkg.name %>.js',
                 dest: '<%= pkg.name %>.min.js'
             }
+        },
+
+        qunit: {
+            all: ['test/**/*.html']
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-qunit');
 
-    grunt.registerTask('default', ['jshint', 'qunit', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'qunit']);
 };
