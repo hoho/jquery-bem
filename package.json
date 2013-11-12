@@ -1,6 +1,6 @@
 {
   "name": "jquery-bem",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Lightweight BEM plugin for jQuery",
   "main": "jquery-bem.js",
   "directories": {

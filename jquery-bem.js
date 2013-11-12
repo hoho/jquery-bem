@@ -1,7 +1,6 @@
 /*!
- * jQuery BEM v0.6.2, https://github.com/hoho/jquery-bem
- * Copyright 2012-2013 Marat Abdullin
- * Released under the MIT license
+ * jQuery BEM v0.6.3, https://github.com/hoho/jquery-bem
+ * (c) 2012-2013 Marat Abdullin, MIT license
  */
 (function($, undefined) {
 ///////////////////////////////////////////////////////////////////////////////
@@ -492,24 +491,22 @@ $fn[bemModString] = function(mod, val, force) {
                     }
                 }
 
-                if (!force && ((!prev && !val) || (prev === val))) {
-                    return;
+                if (!(!force && ((!prev && !val) || (prev === val)))) {
+                    callbacks = getCallbacks(modKey, mod, i, w);
+
+                    j = i + modSeparator + mod;
+
+                    // Don't forget about boolean modifiers.
+                    if (prev) {
+                        self.removeClass(j + (prev === true ? emptyString : modSeparator + prev));
+                    }
+
+                    if (val) {
+                        self.addClass(j + (val === true ? emptyString : modSeparator + val));
+                    }
+
+                    Super(i, self, callbacks)(mod, val || undefined, prev);
                 }
-
-                callbacks = getCallbacks(modKey, mod, i, w);
-
-                j = i + modSeparator + mod;
-
-                // Don't forget about boolean modifiers.
-                if (prev) {
-                    self.removeClass(j + (prev === true ? emptyString : modSeparator + prev));
-                }
-
-                if (val) {
-                    self.addClass(j + (val === true ? emptyString : modSeparator + val));
-                }
-
-                Super(i, self, callbacks)(mod, val || undefined, prev);
             }
         });
 
