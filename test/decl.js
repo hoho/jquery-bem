@@ -45,6 +45,7 @@ $.BEM.decl(TEST_BLOCK_PREFIX + 'block4')
             __declRet.push(TEST_BLOCK_PREFIX + 'block4__elem1 ' + mod + ' ' + val + ' ' + prev);
             this['something'] = 9876;
             this.bemMod('fooo', 'booo' + val);
+            __declRet.push(TEST_BLOCK_PREFIX + 'block4__elem1 getMod ' + this.bemMod('fooo'));
         })
         .onMod('fooo', function(mod, val, prev) {
             __declRet.push(TEST_BLOCK_PREFIX + 'block4__elem1 ' + mod + ' ' + val + ' ' + prev + ' ' + this['something']);
@@ -304,9 +305,11 @@ test('Callback context test', function() {
         [TEST_BLOCK_PREFIX + 'block5 moooo true undefined',
          TEST_BLOCK_PREFIX + 'block4__elem1 moooo true undefined',
          TEST_BLOCK_PREFIX + 'block4__elem1 fooo boootrue undefined 9876|tyc|piu|ahahahooooooo',
+         TEST_BLOCK_PREFIX + 'block4__elem1 getMod boootrue',
          TEST_BLOCK_PREFIX + 'block5 moooo yyyy true',
          TEST_BLOCK_PREFIX + 'block4__elem1 moooo yyyy true',
          TEST_BLOCK_PREFIX + 'block4__elem1 fooo boooyyyy boootrue 9876|tyc|piu|ahahahooooooo',
+         TEST_BLOCK_PREFIX + 'block4__elem1 getMod boooyyyy',
          TEST_BLOCK_PREFIX + 'block5 mememe'],
         'mememe'
     );

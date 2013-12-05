@@ -1,5 +1,5 @@
 /*!
- * jQuery BEM v0.6.3, https://github.com/hoho/jquery-bem
+ * jQuery BEM v0.6.4, https://github.com/hoho/jquery-bem
  * (c) 2012-2013 Marat Abdullin, MIT license
  */
 (function($, undefined) {
@@ -112,8 +112,8 @@ var blockPrefixes = '(?:b-|l-)',
         self.$ = jq;
 
         self[bemModString] = function(mod, val, force) {
-            jq[bemModString]({block: be, mod: mod}, val, force);
-            return self;
+            mod = jq[bemModString]({block: be, mod: mod}, val, force);
+            return val === undefined ? mod : self;
         };
 
         self[bemCallString] = function(name) {
