@@ -2,6 +2,8 @@
  * jQuery BEM v0.6.4, https://github.com/hoho/jquery-bem
  * (c) 2012-2013 Marat Abdullin, MIT license
  */
+var jq = $ || jQuery || require ('jquery'); // if there's no jquery require one jq because of linter
+
 (function($, undefined) {
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -515,4 +517,4 @@ $fn[bemModString] = function(mod, val, force) {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-})($);
+})(jq);
